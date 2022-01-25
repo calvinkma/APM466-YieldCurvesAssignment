@@ -1,8 +1,9 @@
 from BondPricesDao import BondPricesDao
+from BondPricesTransformer import BondPricesTransformer
 
 def main():
-    print("Hello World!")
-    d = BondPricesDao()
+    raw_data = BondPricesDao.get_raw_data()
+    t = BondPricesTransformer(raw_data)
     return
 
 if __name__ == "__main__":
