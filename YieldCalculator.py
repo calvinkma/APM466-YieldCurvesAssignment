@@ -9,8 +9,9 @@ class YieldCalculator:
     
     def get_yield_curve_on_date(self, string_date):
         yield_x, yield_y = [], []
+        buy_date = datetime.strptime(string_date, Globals.DATETIME_FORMAT_STR).date()
+
         for _, row in self.data.iterrows():
-            buy_date = datetime.strptime(string_date, Globals.DATETIME_FORMAT_STR).date()
             maturity_date = datetime.strptime(row["Maturity"], Globals.DATETIME_FORMAT_STR).date()
 
             cf = build_bond_cf(Globals.FACE_VALUE, buy_date, row[string_date], \

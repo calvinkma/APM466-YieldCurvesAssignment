@@ -15,20 +15,16 @@ class BondPricesTransformer:
         return self.data
     
     def _filter_bonds(self):
-        is_maturing_in_mar = self.data["Maturity"].str.contains("3/1/")
-        mar_mature_bonds = self.data[is_maturing_in_mar]
-
-        is_maturing_in_sep = self.data["Maturity"].str.contains("9/1/")
-        sep_mature_bonds = self.data[is_maturing_in_sep]
-
-        self.data = pd.concat([mar_mature_bonds, sep_mature_bonds])
+        is_maturing_in_mar_sep = self.data["Maturity"].str.match("(3\/1\/)|(9\/1\/)")
+        self.data = self.data[is_maturing_in_mar_sep].copy()
         return self
     
     def _adjust_bond_prices(self):
         price_observation_dates = get_date_like_column_names(self.data)
 
         for date in price_observation_dates:
-            self.data[date] = self.data.apply(lambda x: self._calculate_dirty_price(x, date), axis = 1)
+            dirty_prices = self.data.apply(lambda x: self._calculate_dirty_price(x, date), axis = 1)
+            self.data.loc[:, date] = dirty_prices
         
         return self
     
