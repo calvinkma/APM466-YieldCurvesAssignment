@@ -1,3 +1,5 @@
+from util import get_date_like_column_names
+
 from datetime import datetime
 import pandas as pd
 
@@ -24,8 +26,7 @@ class BondPricesTransformer:
         return self
     
     def _adjust_bond_prices(self):
-        columns = list(self.data)
-        price_observation_dates = list(filter(lambda x: x.count("/") == 2, columns))
+        price_observation_dates = get_date_like_column_names(self.data)
 
         for date in price_observation_dates:
             self.data[date] = self.data.apply(lambda x: self._calculate_dirty_price(x, date), axis = 1)
