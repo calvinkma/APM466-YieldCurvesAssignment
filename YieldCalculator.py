@@ -1,5 +1,5 @@
 from Globals import Globals
-from util import build_bond_cf
+from util import build_bond_cf, calculate_irr
 
 from datetime import datetime
 
@@ -18,7 +18,7 @@ class YieldCalculator:
                                maturity_date)
             
             # Calculate IRR
-            ytm = 0
+            ytm = calculate_irr(cf, buy_date)
 
             yield_x.append(maturity_date)
             yield_y.append(ytm)
