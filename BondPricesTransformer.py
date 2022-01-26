@@ -8,13 +8,12 @@ class BondPricesTransformer:
 
     def __init__(self, raw_data):
         self.data = raw_data
-        self.filter_bonds()
-        print(self.data)
-        self.adjust_bond_prices()
-        print(self.data)
-
     
-    def filter_bonds(self):
+    def process_raw_data(self):
+        self._filter_bonds()._adjust_bond_prices()
+        return self.data
+    
+    def _filter_bonds(self):
         is_maturing_in_mar = self.data["Maturity"].str.contains("3/1/")
         mar_mature_bonds = self.data[is_maturing_in_mar]
 
@@ -24,7 +23,7 @@ class BondPricesTransformer:
         self.data = pd.concat([mar_mature_bonds, sep_mature_bonds])
         return self
     
-    def adjust_bond_prices(self):
+    def _adjust_bond_prices(self):
         columns = list(self.data)
         price_observation_dates = list(filter(lambda x: x.count("/") == 2, columns))
 
