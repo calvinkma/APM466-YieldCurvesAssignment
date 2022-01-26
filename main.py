@@ -1,5 +1,8 @@
 from BondPricesDao import BondPricesDao
 from BondPricesTransformer import BondPricesTransformer
+from YieldCalculator import YieldCalculator
+from util import get_date_like_column_names
+from Globals import Globals
 
 RAW_BOND_PRICES_CSV_FILENAME = "CDNGovtBondPricesRaw.csv"
 PROCESSED_BOND_PRICES_CSV_FILENAME = "CDNGovtBondPricesProcessed.csv"
@@ -16,6 +19,14 @@ def _get_processed_data():
 
 def main():
     processed_data = _get_processed_data()
+
+    yield_calculator = YieldCalculator(processed_data)
+
+    price_observation_string_dates = get_date_like_column_names(processed_data)
+    for string_date in price_observation_string_dates:
+        yield_x, yield_y = yield_calculator.get_yield_curve_on_date(string_date)
+        print(string_date, yield_x, yield_y)
+
     return
 
 if __name__ == "__main__":
