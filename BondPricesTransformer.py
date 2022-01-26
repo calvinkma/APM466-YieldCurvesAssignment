@@ -36,5 +36,5 @@ class BondPricesTransformer:
         issue_date = datetime.strptime(df_row["Issue Date"], Globals.DATETIME_FORMAT_STR).date()
         accured_interest_starting_date = max(issue_date, BondPricesTransformer.LAST_COUPON_DATE)
         n_days_accured_interest = (datetime.strptime(date, Globals.DATETIME_FORMAT_STR).date() - accured_interest_starting_date).days
-        return df_row[date] + n_days_accured_interest / 365.0 * df_row["Cpn"]
+        return df_row[date] + n_days_accured_interest / (365.0 / 2) * df_row["Cpn"]
 
