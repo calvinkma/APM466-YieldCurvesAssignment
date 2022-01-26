@@ -32,7 +32,7 @@ def main():
         yield_rates_results.record_rates_curve(date, yield_x, yield_y)
     
     # Plot
-    yield_rates_results.plot("Maturity", "YTM", "yield_curves.png")
+    yield_rates_results.plot("CAN Govt Bond Yield Curve", "Maturity", "YTM", "yield_curves.png")
 
     return
 
