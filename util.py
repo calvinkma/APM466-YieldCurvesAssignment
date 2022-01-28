@@ -23,8 +23,8 @@ def build_bond_cf(face_val, buy_date, buy_price, \
 
     return cf
 
-def get_npv(cf, today_date, r=0.01):
-    """Calculate NPV of a cash flow.
+def get_constant_interest_npv(cf, today_date, r=0.01):
+    """Calculate NPV of a cash flow assuming a constant interest rate.
 
     Keywork arguments:
     cf -- A list of lists, each containing [date, value]
@@ -42,7 +42,7 @@ def get_npv(cf, today_date, r=0.01):
 def calculate_irr(cf, today_date):
     """Calculate internal rate of return associated with a cash flow.
     """
-    sol = optimze.root(lambda x: get_npv(cf, today_date, x), [0])
+    sol = optimze.root(lambda x: get_constant_interest_npv(cf, today_date, x), [0])
     
     if len(sol.x) != 1:
         print("Warn!!")
