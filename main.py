@@ -40,7 +40,7 @@ def main():
     
     # Plot
     yield_rates_results.plot("CAN Govt Bond Yield Curve", "Maturity", "YTM", "yield_curves.png")
-    spot_rates_results.plot("CAN Govt Bond Spot Curve", "End Date", "Spot Rate (Annual)", "spot_cruves.png")
+    spot_rates_results.plot("CAN Govt Bond Spot Curve", "End Date", "Spot Rate (Annual)", "spot_curves.png")
 
     return
 

@@ -10,7 +10,7 @@ class SpotCalculator:
     
     def get_spot_curve_on_date(self, string_date):
         buy_date = datetime.strptime(string_date, Globals.DATETIME_FORMAT_STR).date()
-        spot_rate_by_end_date = {buy_date: 0}
+        spot_rate_by_end_date = {}
 
         for _, row in self.data.iterrows():
             maturity_date = datetime.strptime(row["Maturity"], Globals.DATETIME_FORMAT_STR).date()
@@ -38,8 +38,11 @@ class SpotCalculator:
         """
         npv = 0
         for date, value in cf:
-            n_days = (date - today_date).days
-            npv += value * exp((-1) * spot_rate_by_end_date[date] / 365.0 * n_days)
+            if date == today_date:
+                npv += value
+            else:
+                n_days = (date - today_date).days
+                npv += value * exp((-1) * spot_rate_by_end_date[date] / 365.0 * n_days)
         
         return npv
 
