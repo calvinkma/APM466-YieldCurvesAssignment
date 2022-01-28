@@ -1,5 +1,5 @@
 from Globals import Globals
-from util import build_bond_cf, calculate_irr
+from util import build_bond_cf
 
 from datetime import datetime
 from math import exp, log

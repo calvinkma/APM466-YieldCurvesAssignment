@@ -1,11 +1,13 @@
-from datetime import datetime, date
+from util import date_to_second, second_to_date
+
 import matplotlib.pyplot as plt
 from scipy import interpolate
 import numpy as np
 
-class RatesResullts:
+class RatesResults:
     def __init__(self):
         self.rates_curve_by_date = {}
+        self.tck_by_date = {}
     
     def record_rates_curve(self, date, x, y):
         sorted_x, sorted_y = zip(*sorted(zip(x, y)))
@@ -25,12 +27,13 @@ class RatesResullts:
             sorted_x, sorted_y = self.rates_curve_by_date[date][0], self.rates_curve_by_date[date][1]
 
             # Convert datetype x values to float-valued POXIS timestamp for interpolation
-            sorted_x_sec = self._date_to_second(sorted_x)
+            sorted_x_sec = date_to_second(sorted_x)
             tck = interpolate.splrep(sorted_x_sec, sorted_y)
+            self.tck_by_date[date] = tck
 
             # Define intermediate x values where the rate should be estimated
             sorted_x_sec_interpolated = np.linspace(sorted_x_sec[0], sorted_x_sec[-1], 500)
-            sorted_x_interpolated = self._second_to_date(sorted_x_sec_interpolated)
+            sorted_x_interpolated = second_to_date(sorted_x_sec_interpolated)
             sorted_y_interpolated = interpolate.splev(sorted_x_sec_interpolated, tck)
 
             plt.plot(sorted_x_interpolated, sorted_y_interpolated, c=color)
@@ -41,9 +44,5 @@ class RatesResullts:
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.savefig(out_filename)
-    
-    def _date_to_second(self, dates):
-        return [datetime.combine(i, datetime.min.time()).timestamp() for i in dates]
-    
-    def _second_to_date(self, seconds):
-        return [date.fromtimestamp(second) for second in seconds]
+
+        plt.clf()

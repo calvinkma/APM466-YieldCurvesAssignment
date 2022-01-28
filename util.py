@@ -1,4 +1,6 @@
 from math import exp
+
+from datetime import datetime, date
 import scipy.optimize as optimze
 
 def get_date_like_column_names(df):
@@ -47,3 +49,9 @@ def calculate_irr(cf, today_date):
     if len(sol.x) != 1:
         print("Warn!!")
     return sol.x[0]
+
+def date_to_second(dates):
+    return [datetime.combine(i, datetime.min.time()).timestamp() for i in dates]
+
+def second_to_date(seconds):
+    return [date.fromtimestamp(second) for second in seconds]
