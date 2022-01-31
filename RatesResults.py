@@ -22,6 +22,7 @@ class RatesResults:
     def plot(self, title, xlabel, ylabel, out_filename):
         cmap = plt.cm.get_cmap("BuPu")
         colors = cmap(np.linspace(0, 1, len(self.rates_curve_by_date)))
+        plt.rcParams["figure.figsize"] = (6.5, 4)
 
         for date, color in zip(self.rates_curve_by_date, colors):
             sorted_x, sorted_y = self.rates_curve_by_date[date][0], self.rates_curve_by_date[date][1]
@@ -38,7 +39,9 @@ class RatesResults:
 
             plt.plot(sorted_x_interpolated, sorted_y_interpolated, c=color)
             plt.plot(sorted_x, sorted_y, c=color, marker='x', linestyle='None', label='_nolegend_')
-        
+
+        fig = plt.gcf()
+        fig.autofmt_xdate()
         plt.legend(self.rates_curve_by_date, ncol=3, labelspacing=0.05)
         plt.title(title)
         plt.xlabel(xlabel)
