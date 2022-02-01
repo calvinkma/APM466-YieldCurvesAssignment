@@ -1,4 +1,7 @@
 from datetime import datetime
+from math import log
+import numpy as np
+
 from BondPricesDao import BondPricesDao
 from BondPricesTransformer import BondPricesTransformer
 from RatesResults import RatesResults
@@ -20,6 +23,34 @@ def _get_processed_data():
         processed_data = transfomer.process_raw_data()
         BondPricesDao.save_df_as_csv(processed_data, PROCESSED_BOND_PRICES_CSV_FILENAME)
     return processed_data
+
+def _analyze_log_return_cov(rates_results, indices, output_filename):
+    # Define matrix X with shape <n_variables, n_observations>
+    # Each variable corresponds to an interest rate.
+    # Each observation corresponds to the daily log return for everyday bond prices are recorded.
+    bond_prices_record_dates = sorted(list(rates_results.rates_curve_by_date.keys()))
+    n_observations = len(bond_prices_record_dates) - 1
+    n_var = len(indices)
+
+    X = np.zeros((n_var, n_observations))
+
+    for var in range(n_var):
+        for observation in range(n_observations):
+            rate_after = rates_results.get_rate(bond_prices_record_dates[observation+1], indices[var])
+            rate_before = rates_results.get_rate(bond_prices_record_dates[observation], indices[var])
+            X[var, observation] = log(rate_after / rate_before)
+    
+    cov = np.cov(X)
+    eigenvalues, eigenvectors = np.linalg.eig(cov)
+
+    idx = eigenvalues.argsort()[::-1]   
+    eigenvalues = eigenvalues[idx]
+    eigenvectors = eigenvectors[:,idx]
+
+    with open(output_filename, 'w') as f:
+        print("Cov: \n", cov, file=f)
+        print("Eigenvalues: \n", eigenvalues, file=f)
+        print("Eigenvectors:: \n", eigenvectors, file=f)
 
 def main():
     processed_data = _get_processed_data()
@@ -53,6 +84,10 @@ def main():
         forward_rates_results.record_rates_curve(date, forward_x, forward_y)
 
     forward_rates_results.plot("CAN Govt Bond 1yr Forward Curve", "End Date", "Forward Rate (Annual)", "forward_curves.png")
+
+    # Calculate daily log returns
+    _analyze_log_return_cov(yield_rates_results, range(1, 11, 2), 'daily_yield_rate_returns.txt')
+    _analyze_log_return_cov(forward_rates_results, range(0, 4, 1), 'daily_future_rate_returns.txt')
 
     return
 

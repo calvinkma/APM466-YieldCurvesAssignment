@@ -12,6 +12,9 @@ class RatesResults:
     def record_rates_curve(self, date, x, y):
         sorted_x, sorted_y = zip(*sorted(zip(x, y)))
         self.rates_curve_by_date[date] = (sorted_x, sorted_y)
+
+    def get_rate(self, buy_date, bond_index):
+        return self.rates_curve_by_date[buy_date][1][bond_index]
     
     def print_all_data(self):
         for date in self.rates_curve_by_date:
