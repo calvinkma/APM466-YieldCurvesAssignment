@@ -2,7 +2,6 @@ from Globals import Globals
 from util import get_date_like_column_names
 
 from datetime import datetime
-import pandas as pd
 
 class BondPricesTransformer:
     LAST_COUPON_DATE = datetime.strptime("9/1/2021", Globals.DATETIME_FORMAT_STR).date()
@@ -30,7 +29,7 @@ class BondPricesTransformer:
     
     def _calculate_dirty_price(self, df_row, date):
         issue_date = datetime.strptime(df_row["Issue Date"], Globals.DATETIME_FORMAT_STR).date()
-        accured_interest_starting_date = max(issue_date, BondPricesTransformer.LAST_COUPON_DATE)
-        n_days_accured_interest = (datetime.strptime(date, Globals.DATETIME_FORMAT_STR).date() - accured_interest_starting_date).days
-        return df_row[date] + n_days_accured_interest / (365.0 / 2) * df_row["Cpn"]
+        accrued_interest_starting_date = max(issue_date, BondPricesTransformer.LAST_COUPON_DATE)
+        n_days_accrued_interest = (datetime.strptime(date, Globals.DATETIME_FORMAT_STR).date() - accrued_interest_starting_date).days
+        return df_row[date] + n_days_accrued_interest / (365.0 / 2) * df_row["Cpn"]
 
