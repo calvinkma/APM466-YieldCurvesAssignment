@@ -48,6 +48,7 @@ def _analyze_log_return_cov(rates_results, indices, output_filename):
     eigenvectors = eigenvectors[:,idx]
 
     with open(output_filename, 'w') as f:
+        np.set_printoptions(precision=2)
         print("Cov: \n", cov, file=f)
         print("Eigenvalues: \n", eigenvalues, file=f)
         print("Eigenvectors:: \n", eigenvectors, file=f)
